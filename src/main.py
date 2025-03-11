@@ -13,22 +13,40 @@ def process_contracts():
         notification_service = NotificationLogService(session)
         contract_service = ContractDataService(session)
         reminder_history_service = ReminderHistoryService(session)
-        # Query all results
+        contract_type_service = ContractTypeService(session)
+        
         unprocessed_results = notification_service.get_unprocessed_notifications()
+
         for row in unprocessed_results:
             unprocessed_contracts = contract_service.get_unprocessed_contracts(row.ContractId)
             for contract in unprocessed_contracts:
-                reminder_date = generate_reminder_date(contract.ExpirationDate, contract.ContractTypeId)
-                reminder_history_service.set_reminder(reminder_date, contract.ContractId)
+                days_before_reminder = contract_type_service.get_contract_type_days_before_reminder(contract.ContractTypeId) 
+                reminder_dates = generate_reminder_date(contract.ExpirationDate, days_before_reminder)
+                for reminder_date in reminder_dates:
+                    reminder_history_service.set_reminder(reminder_date, contract.ContractId)
+                notification_service.mark_notification_processed(row.NotificationId)
+
     except Exception as e:
+        logging.error(f"An error occurred in process_contracts: {e}")
         print(f"An error occurred: {e}")
 
-def generate_reminder_date(expiration_date: datetime, contract_type_id: int): 
-    session = get_db_session()
-    contract_type_service = ContractTypeService(session)
-    days_before_expiration = contract_type_service.get_contract_type_days_before_reminder(contract_type_id)
-    reminder_date = expiration_date - timedelta(days=days_before_expiration)
-    return reminder_date
+def generate_reminder_date(expiration_date: datetime, days_before_reminder: int):
+
+    dates = []
+    while days_before_reminder > 0:
+        if days_before_reminder >= 180:
+            reminder_date = expiration_date - timedelta(days=days_before_reminder) + timedelta(days=60)
+            dates.append(reminder_date)
+            days_before_reminder -= 60
+        elif days_before_reminder >= 90:
+            reminder_date = expiration_date - timedelta(days=days_before_reminder) + timedelta(days=30)
+            dates.append(reminder_date)
+            days_before_reminder -= 30
+        else:
+            reminder_date = expiration_date - timedelta(days=days_before_reminder)
+            dates.append(reminder_date)
+            days_before_reminder = 0
+    return dates
 
 def send_reminders():
     try:
@@ -57,7 +75,7 @@ def send_reminders():
                             "summary": contract.ContractSummary,
                             "contract_type_id": contract.ContractTypeId
                     }
-                    subject = f"Contract Expiration Reminder: {contract.Title}"
+                    subject = f"Contract Expiration Reminder: {contract.Title} Expires on <strong>{contract.ExpirationDate.strftime("%d/%m/%Y")}</strong>"
                     body_template = f"""
                                             <!DOCTYPE html>
                                             <html>
@@ -132,7 +150,7 @@ def send_reminders():
                                                         <li><strong>Vendor:</strong> {contract.VendorName}</li>
                                                         <li><strong>Contract Type:</strong> {contract_type.ContractType}</li>
                                                         <li><strong>Contract ID:</strong> {contract.ContractNumber}</li>
-                                                        <li><strong>Expiration Date:</strong> {contract.ExpirationDate.strftime("%Y-%m-%d")}</li>
+                                                        <li><strong>Expiration Date:</strong> {contract.ExpirationDate.strftime("%d/%m/%Y")}</li>
                                                     </ul>
 
                                                     <p><strong>Contract Summary:</strong></p>
@@ -170,11 +188,10 @@ def send_reminders():
         print(f"An error occurred: {e}")
 
 if __name__ == "__main__":
-    logging.basicConfig(filename="script.log", level=logging.INFO)
     try:
         process_contracts()
         send_reminders()
     except Exception as e:
-        logging.error(f"Error: {e}")
+        print(f"Error: {e}")
 
 

@@ -11,7 +11,7 @@ class NotificationLogService:
     def get_unprocessed_notifications(self):
         return self.session.query(NotificationLog).filter(NotificationLog.Processed == False).all()
     
-    def mark_notification_as_processed(self, notification_id: int):
+    def mark_notification_processed(self, notification_id: int):
         notification = self.session.query(NotificationLog).get(notification_id)
         if notification:
             notification.Processed = True
