@@ -30,22 +30,32 @@ def process_contracts():
         logging.error(f"An error occurred in process_contracts: {e}")
         print(f"An error occurred: {e}")
 
-def generate_reminder_date(expiration_date: datetime, days_before_reminder: int):
+def generate_reminder_date(expiration_date: datetime, days_before_reminder: int):  
 
+    # Edge case: if days_before_reminder <= 0, just return the expiration date
+    if days_before_reminder <= 0:
+        return [expiration_date]
+
+    difference = days_before_reminder
     dates = []
-    while days_before_reminder > 0:
-        if days_before_reminder >= 180:
-            reminder_date = expiration_date - timedelta(days=days_before_reminder) + timedelta(days=60)
-            dates.append(reminder_date)
-            days_before_reminder -= 60
-        elif days_before_reminder >= 90:
-            reminder_date = expiration_date - timedelta(days=days_before_reminder) + timedelta(days=30)
-            dates.append(reminder_date)
-            days_before_reminder -= 30
+
+    while difference > 0:
+        if difference >= 60:
+            step = 60
+        elif difference >= 30:
+            step = 30
+        elif difference >= 14:
+            step = 14
         else:
-            reminder_date = expiration_date - timedelta(days=days_before_reminder)
+            step = difference
+
+        reminder_date = expiration_date - timedelta(days=difference)
+        if reminder_date >= datetime.now().date():
             dates.append(reminder_date)
-            days_before_reminder = 0
+
+        difference -= step
+
+    dates.append(expiration_date)
     return dates
 
 def send_reminders():
@@ -75,7 +85,7 @@ def send_reminders():
                             "summary": contract.ContractSummary,
                             "contract_type_id": contract.ContractTypeId
                     }
-                    subject = f"Contract Expiration Reminder: {contract.Title} Expires on <strong>{contract.ExpirationDate.strftime("%d/%m/%Y")}</strong>"
+                    subject = f"Contract Expiration Reminder: {contract.Title} Expires on {contract.ExpirationDate.strftime("%m/%d/%Y")}"
                     body_template = f"""
                                             <!DOCTYPE html>
                                             <html>
