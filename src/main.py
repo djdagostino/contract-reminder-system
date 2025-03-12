@@ -32,7 +32,7 @@ def process_contracts():
 
 def generate_reminder_date(expiration_date: datetime, days_before_reminder: int):  
 
-    # Edge case: if days_before_reminder <= 0, just return the expiration date
+
     if days_before_reminder <= 0:
         return [expiration_date]
 
