@@ -15,4 +15,6 @@ class ContractData(Base):
     ExpirationDate = sa.Column(sa.Date, nullable=True)
     ContractSummary = sa.Column(sa.Text, nullable=True)
     ContractTypeId = sa.Column(sa.Integer, nullable=True)
+    StartDate = sa.Column(sa.Date, nullable=True)
+    AutoRenew = sa.Column(sa.Boolean, nullable=True)
 

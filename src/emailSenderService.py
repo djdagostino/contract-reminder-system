@@ -72,7 +72,7 @@ def send_contract_email(
                     {"emailAddress": {"address": recipient_email}}
                 ],
                 #"ccRecipients": [
-                #    {"emailAddress": {"address": cc_email}}
+                #   {"emailAddress": {"address": cc_email}}
                 #]
             }
         }
