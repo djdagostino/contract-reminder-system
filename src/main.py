@@ -2,7 +2,7 @@ import logging
 from datetime import datetime, timedelta
 from database.services.notificationLogService import NotificationLogService
 from database.services.contractDataService import ContractDataService
-from database.services.reminderHistoryService import ReminderHistoryService
+from database.services.reminderProcessingService import ReminderProcessingService
 from database.services.contractTypeService import ContractTypeService
 from database.db_connection import get_db_session
 from emailSenderService import send_contract_email
@@ -12,7 +12,7 @@ def process_contracts():
         session = get_db_session()
         notification_service = NotificationLogService(session)
         contract_service = ContractDataService(session)
-        reminder_history_service = ReminderHistoryService(session)
+        reminder_processing_service = ReminderProcessingService(session)
         contract_type_service = ContractTypeService(session)
         
         unprocessed_results = notification_service.get_unprocessed_notifications()
@@ -20,10 +20,14 @@ def process_contracts():
         for row in unprocessed_results:
             unprocessed_contracts = contract_service.get_unprocessed_contracts(row.ContractId)
             for contract in unprocessed_contracts:
+                if contract.AutoRenew == True:
+                    auto_reminder_date = contract.ExpirationDate - timedelta(days=60)
+                    reminder_processing_service.set_auto_reminder(auto_reminder_date, contract.ContractId)
+                reminder_processing_service.set_start_reminder(contract.StartDate, contract.ContractId)
                 days_before_reminder = contract_type_service.get_contract_type_days_before_reminder(contract.ContractTypeId) 
                 reminder_dates = generate_reminder_date(contract.ExpirationDate, days_before_reminder)
                 for reminder_date in reminder_dates:
-                    reminder_history_service.set_reminder(reminder_date, contract.ContractId)
+                    reminder_processing_service.set_expiration_reminder(reminder_date, contract.ContractId)
                 notification_service.mark_notification_processed(row.NotificationId)
 
     except Exception as e:
@@ -62,10 +66,10 @@ def send_reminders():
     try:
         session = get_db_session()
         contract_service = ContractDataService(session)
-        reminder_history_service = ReminderHistoryService(session)
+        reminder_processing_service = ReminderProcessingService(session)
         contract_type_service = ContractTypeService(session)
 
-        unprocessed_results = reminder_history_service.get_unprocessed_emails()
+        unprocessed_results = reminder_processing_service.get_unprocessed_emails()
 
         for row in unprocessed_results:
             reminder_date = row.ReminderDate
@@ -182,7 +186,7 @@ def send_reminders():
                                             """
 
 
-                                # Send the email
+                                
                     email_sent = send_contract_email(
                                     recipient_email=contract_type.ContractOwnerEmail,
                                     sender_email="automation@wgeld.org",  
@@ -191,7 +195,7 @@ def send_reminders():
                                     body_template=body_template,
                                 )
                     if email_sent:
-                        reminder_history_service.mark_email_as_sent(row.ReminderId)
+                        reminder_processing_service.mark_email_as_sent(row.ReminderId)
                         print(f"Email sent successfully to {contract_type.ContractOwner} for contract {contract.Title}")
                             
     except Exception as e:
@@ -200,7 +204,7 @@ def send_reminders():
 if __name__ == "__main__":
     try:
         process_contracts()
-        send_reminders()
+        #send_reminders()
     except Exception as e:
         print(f"Error: {e}")
 
