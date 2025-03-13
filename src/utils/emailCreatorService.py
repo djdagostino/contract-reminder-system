@@ -1,4 +1,3 @@
-from datetime import datetime
 
 def create_expiration_reminder_email(contract, contract_type):
 
@@ -215,10 +214,10 @@ def create_start_reminder_email(contract, contract_type):
     </body>
     </html>
     """
-    contract_info = {
-    "contract_id": contract.ContractId,
-        "contract_type": contract_type.ContractType,
-        "end_date": contract.ExpirationDate.strftime("%Y-%m-%d") if contract.ExpirationDate else "N/A",
+    contract_info = {   
+        "contract_id": contract.ContractId,
+    "contract_type": contract_type.ContractType,
+        "end_date": contract.ExpirationDate.strftime("%Y-%m-%d"),
         "title": contract.Title, 
         "manager": contract_type.ContractOwner,
         "vendor": contract.VendorName,
@@ -234,7 +233,7 @@ def create_start_reminder_email(contract, contract_type):
 
 def create_auto_reminder_email(contract, contract_type):
    
-    subject = f"Contract Auto-Renew 60-Day Notification: {contract.Title} Auto-Renews on {contract.ExpirationDate.strftime('%m/%d/%Y')}"
+    subject = f"60-Day Contract Renewal Notice: {contract.Title} Auto-Renews on {contract.ExpirationDate.strftime('%m/%d/%Y')}"
 
     body_template = f"""
     <!DOCTYPE html>
@@ -331,16 +330,16 @@ def create_auto_reminder_email(contract, contract_type):
     </html>
     """
 
-    contract_info = {{
+    contract_info = {
         "contract_id": contract.ContractId,
         "contract_type": contract_type.ContractType,
-        "end_date": contract.ExpirationDate.strftime("%Y-%m-%d") if contract.ExpirationDate else "N/A",
+        "end_date": contract.ExpirationDate.strftime("%Y-%m-%d"),
         "title": contract.Title,
         "manager": contract_type.ContractOwner,
         "vendor": contract.VendorName,
         "summary": contract.ContractSummary,
         "contract_type_id": contract.ContractTypeId
-}}
+}
     return {
         "subject": subject,
         "body_template": body_template,
