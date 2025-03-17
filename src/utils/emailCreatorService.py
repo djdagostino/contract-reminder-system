@@ -194,7 +194,7 @@ def create_start_reminder_email(contract, contract_type):
                 <li><strong>Vendor:</strong> {contract.VendorName}</li>
                 <li><strong>Contract Type:</strong> {contract_type.ContractType}</li>
                 <li><strong>Contract ID:</strong> {contract.ContractNumber}</li>
-                <li><strong>Start Date:</strong> {contract.StartDate.strftime("%d/%m/%Y")}</li>
+                <li><strong>Start Date:</strong> {contract.StartDate.strftime("%m/%d/%Y")}</li>
             </ul>
 
             <p><strong>Contract Summary:</strong></p>

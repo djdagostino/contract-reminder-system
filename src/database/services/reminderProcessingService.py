@@ -80,6 +80,7 @@ class ReminderProcessingService:
             self.session.commit()
         except SQLAlchemyError as e:
             self.session.rollback()
+            raise ValueError(f"Failed to mark start reminder email as sent for contract with ID {reminder_id}: {str(e)}")
 
     def mark_auto_reminder_email_as_sent(self, reminder_id: int):
         try:
@@ -87,5 +88,6 @@ class ReminderProcessingService:
             self.session.commit()
         except SQLAlchemyError as e:
             self.session.rollback()
+            raise ValueError(f"Failed to mark auto-renewal email as sent for contract with ID {reminder_id}: {str(e)}")
 
 

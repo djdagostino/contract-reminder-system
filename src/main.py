@@ -49,7 +49,6 @@ def send_reminders():
         start_unprocessed_results = reminder_processing_service.get_start_reminder_unprocessed_emails()
         auto_unprocessed_results = reminder_processing_service.get_auto_reminder_unprocessed_emails()
 
-
         for row in exp_unprocessed_results:
             exp_reminder_date = row.ExpReminderDate
             current_time = datetime.now().date()
