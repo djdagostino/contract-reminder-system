@@ -2,7 +2,6 @@ from datetime import datetime, timedelta
 
 def generate_reminder_date(expiration_date: datetime, days_before_reminder: int):  
 
-    # Edge case: if days_before_reminder <= 0, just return the expiration date
     if days_before_reminder <= 0:
         return [expiration_date]
 
@@ -11,10 +10,8 @@ def generate_reminder_date(expiration_date: datetime, days_before_reminder: int)
 
     while difference > 0:
         if difference >= 60:
-            step = 60
-        elif difference >= 30:
             step = 30
-        elif difference >= 14:
+        elif difference >= 30:
             step = 14
         else:
             step = difference
