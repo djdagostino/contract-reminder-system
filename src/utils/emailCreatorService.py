@@ -1,7 +1,7 @@
 
 def create_expiration_reminder_email(contract, contract_type):
 
-    subject = f"Contract Expiration Reminder: {contract.Title} Expires on {contract.ExpirationDate.strftime('%m/%d/%Y')}"
+    subject = f"Contract Expiration Reminder: {contract.VendorName} Contract Expires on {contract.ExpirationDate.strftime('%m/%d/%Y')}"
     
     body_template = f"""
     <!DOCTYPE html>
@@ -77,7 +77,7 @@ def create_expiration_reminder_email(contract, contract_type):
                 <li><strong>Vendor:</strong> {contract.VendorName}</li>
                 <li><strong>Contract Type:</strong> {contract_type.ContractType}</li>
                 <li><strong>Contract ID:</strong> {contract.ContractNumber}</li>
-                <li><strong>Expiration Date:</strong> {contract.ExpirationDate.strftime("%d/%m/%Y")}</li>
+                <li><strong>Expiration Date:</strong> {contract.ExpirationDate.strftime("%m/%d/%Y")}</li>
             </ul>
 
             <p><strong>Contract Summary:</strong></p>
@@ -118,7 +118,7 @@ def create_expiration_reminder_email(contract, contract_type):
 
 def create_start_reminder_email(contract, contract_type):
 
-    subject = f"Contract Start Notification: {contract.Title} Starts on {contract.StartDate.strftime('%m/%d/%Y')}"
+    subject = f"Contract Start Notification: {contract.VendorName} Contract Starts on {contract.StartDate.strftime('%m/%d/%Y')}"
 
     body_template = f"""
     <!DOCTYPE html>
@@ -233,7 +233,7 @@ def create_start_reminder_email(contract, contract_type):
 
 def create_auto_reminder_email(contract, contract_type):
    
-    subject = f"60-Day Contract Renewal Notice: {contract.Title} Auto-Renews on {contract.ExpirationDate.strftime('%m/%d/%Y')}"
+    subject = f"60-Day Contract Renewal Notice: {contract.VendorName} Contract Auto-Renews on {contract.ExpirationDate.strftime('%m/%d/%Y')}"
 
     body_template = f"""
     <!DOCTYPE html>
@@ -309,7 +309,7 @@ def create_auto_reminder_email(contract, contract_type):
                 <li><strong>Vendor:</strong> {contract.VendorName}</li>
                 <li><strong>Contract Type:</strong> {contract_type.ContractType}</li>
                 <li><strong>Contract ID:</strong> {contract.ContractNumber}</li>
-                <li><strong>Next Auto-Renew Date:</strong> {contract.ExpirationDate.strftime("%d/%m/%Y") if contract.ExpirationDate else "N/A"}</li>
+                <li><strong>Next Auto-Renew Date:</strong> {contract.ExpirationDate.strftime("%m/%d/%Y") if contract.ExpirationDate else "N/A"}</li>
             </ul>
 
             <p><strong>Contract Summary:</strong></p>
