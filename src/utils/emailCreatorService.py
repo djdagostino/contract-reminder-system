@@ -74,7 +74,7 @@ def create_expiration_reminder_email(contract, contract_type):
 
             <ul>
                 <li><strong>Contract Title:</strong> {contract.Title}</li>
-                <li><strong>Vendor:</strong> {contract.VendorName}</li>
+                <li><strong>Vendor:</strong> {contract.VendorName.title()}</li>
                 <li><strong>Contract Type:</strong> {contract_type.ContractType}</li>
                 <li><strong>Contract ID:</strong> {contract.ContractNumber}</li>
                 <li><strong>Expiration Date:</strong> {contract.ExpirationDate.strftime("%m/%d/%Y")}</li>
@@ -191,7 +191,7 @@ def create_start_reminder_email(contract, contract_type):
 
             <ul>
                 <li><strong>Contract Title:</strong> {contract.Title}</li>
-                <li><strong>Vendor:</strong> {contract.VendorName}</li>
+                <li><strong>Vendor:</strong> {contract.VendorName.title()}</li>
                 <li><strong>Contract Type:</strong> {contract_type.ContractType}</li>
                 <li><strong>Contract ID:</strong> {contract.ContractNumber}</li>
                 <li><strong>Start Date:</strong> {contract.StartDate.strftime("%m/%d/%Y")}</li>
@@ -306,7 +306,7 @@ def create_auto_reminder_email(contract, contract_type):
 
             <ul>
                 <li><strong>Contract Title:</strong> {contract.Title}</li>
-                <li><strong>Vendor:</strong> {contract.VendorName}</li>
+                <li><strong>Vendor:</strong> {contract.VendorName.title()}</li>
                 <li><strong>Contract Type:</strong> {contract_type.ContractType}</li>
                 <li><strong>Contract ID:</strong> {contract.ContractNumber}</li>
                 <li><strong>Next Auto-Renew Date:</strong> {contract.ExpirationDate.strftime("%m/%d/%Y") if contract.ExpirationDate else "N/A"}</li>
