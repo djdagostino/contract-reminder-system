@@ -36,8 +36,6 @@ def process_contracts():
         logging.error(f"An error occurred in process_contracts: {e}")
         print(f"An error occurred: {e}")
 
-
-
 def send_reminders():
     try:
         session = get_db_session()

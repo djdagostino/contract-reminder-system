@@ -95,3 +95,35 @@ def send_contract_email(
     except Exception as e:
         print(f"Error sending email: {str(e)}")
         return False
+
+"""
+
+import asyncio
+from msgraph import GraphServiceClient
+from msgraph.generated.users.item.messages.messages_request_builder import MessagesRequestBuilder
+from azure.identity import AuthorizationCodeCredential, DeviceCodeCredential
+
+Returns:
+    bool: True if email sent successfully, False otherwise.
+
+
+credential = DeviceCodeCredential(client_id="your_client_id")
+scopes = ['https://graph.microsoft.com/.default']
+graph_client = GraphServiceClient(credential, scopes)
+
+query_params = MessagesRequestBuilder.MessagesRequestBuilderGetQueryParameters(
+		select = ["sender","subject"],
+)
+
+request_configuration = MessagesRequestBuilder.MessagesRequestBuilderGetRequestConfiguration(
+query_parameters = query_params,
+)
+
+async def get_mail():
+    mail = await graph_client.me.messages.get(request_configuration = request_configuration)
+    if mail:
+        # to do with mail collection
+        return mail
+    else:
+        return None
+"""
