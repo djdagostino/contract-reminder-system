@@ -233,7 +233,7 @@ def create_start_reminder_email(contract, contract_type):
 
 def create_auto_reminder_email(contract, contract_type):
    
-    subject = f"60-Day Contract Renewal Notice: {contract.VendorName.title()} Contract Auto-Renews on {contract.ExpirationDate.strftime('%m/%d/%Y')}"
+    subject = f"Contract Renewal Notice: {contract.VendorName.title()} Contract Auto-Renews on {contract.ExpirationDate.strftime('%m/%d/%Y')}"
 
     body_template = f"""
     <!DOCTYPE html>
