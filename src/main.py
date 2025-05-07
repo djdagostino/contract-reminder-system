@@ -65,7 +65,7 @@ def send_reminders():
                     )
                     if email_sent:
                         reminder_processing_service.mark_expiration_reminder_email_as_sent(row.ExpReminderId)
-                        print(f"Email sent successfully to {contract_type.ContractOwner} for contract {contract.Title}")
+                        print(f"Expiration Reminder Email sent successfully to {contract_type.ContractOwner} for contract {contract.Title}")
         
         for row in start_unprocessed_results:
             start_reminder_date = row.StartReminderDate
@@ -85,7 +85,7 @@ def send_reminders():
                     )
                     if email_sent:
                         reminder_processing_service.mark_start_reminder_email_as_sent(row.StartReminderId)
-                        print(f"Email sent successfully to {contract_type.ContractOwner} for contract {contract.Title}")
+                        print(f"Start Reminder Email sent successfully to {contract_type.ContractOwner} for contract {contract.Title}")
         
         for row in auto_unprocessed_results:
             auto_reminder_date = row.AutoReminderDate
@@ -105,7 +105,7 @@ def send_reminders():
                     )
                     if email_sent:
                         reminder_processing_service.mark_auto_reminder_email_as_sent(row.AutoReminderId)
-                        print(f"Email sent successfully to {contract_type.ContractOwner} for contract {contract.Title}")
+                        print(f"Auto-Renew Email sent successfully to {contract_type.ContractOwner} for contract {contract.Title}")
                                 
     except Exception as e:
         print(f"An error occurred: {e}")
